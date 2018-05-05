@@ -1,0 +1,121 @@
+<!DOCTYPE html> 
+<html> 
+<head>
+    <title>2012111382 박창우</title> 
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> 
+    <link href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css' rel='stylesheet' type='text/css'> 
+</head> 
+
+<body class="container"> 
+  <h1>Solidity언어를 이용한 블록체인 기반의 스마트 계약 및 증명</h1> 
+  <h2>(중간 보고서용)</h2> 
+  <ul>컨트랙트 주소: <span id="contractAddr"></span></ul>
+   <div class="table-responsive"> 
+     <table class="table table-bordered"> 
+       <thead> 
+         <tr> 
+          <th>No.</th> 
+          <th>Candidate</th>
+	  <th>votes</th> 
+	  <th>Click</th>
+         </tr> 
+       </thead> 
+       <tbody> 
+         <tr> 
+           <td>1.</td> 
+           <td>Park</td>
+           <td id="voted1"></td>  
+	   <td><a href ="#" name = 'can1' onclick="voting(this)" class="btn btn-primary">vote</a></td>
+         </tr> 
+         <tr> 
+           <td>2.</td> 
+           <td>Lee</td> 
+           <td id="voted2"></td> 
+	   <td><a href="#" name = 'can2' onclick="voting(this)"class="btn btn-primary">vote</a></td>
+         </tr>
+         <tr> 
+           <td>3.</td> 
+           <td>Kim</td> 
+           <td id="voted3"></td> 
+	   <td><a href="#" name = 'can3' onclick="voting(this)" class="btn btn-primary">vote</a></td>
+         </tr>
+       </tbody> 
+     </table> 
+   </div> 
+<a href="#" onclick="refresh()" class="btn btn-primary">새로고침</a> 
+</body> 
+
+ <script type="text/javascript" src="https://cdn.rawgit.com/ethereum/web3.js/develop/dist/web3.js"></script>
+ <script type="text/javascript" src="https://code.jquery.com/jquery-3.1.1.slim.min.js"></script> 
+
+
+<script>
+
+web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+
+var contractAddress = '0x2d549f4dd12b0a54e90790fc4c658182d335c24f';
+
+var abi = [{"constant":true,"inputs":[{"name":"","type":"uint256"}],"name":"List_candidate","outputs":[{"name":"","type":"bytes32"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"","type":"bytes32"}],"name":"voted","outputs":[{"name":"","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"candidateName","type":"bytes32"}],"name":"voting","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"candidateName","type":"bytes32"}],"name":"counting","outputs":[{"name":"","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function"},{"inputs":[{"name":"candidateName","type":"bytes32[]"}],"payable":false,"stateMutability":"nonpayable","type":"constructor"}];
+
+
+
+
+
+
+midContract = web3.eth.contract(abi);
+
+contractInstance = midContract.at(contractAddress);
+
+document.getElementById('contractAddr').innerHTML = contractAddress;
+
+
+
+
+candidates = {"can1": "voted1", "can2": "voted2", "can3": "voted3"};
+
+
+screenset();
+
+
+function voting(candidate){
+
+i = web3.fromAscii(candidate.name)
+
+console.log(candidate.name)
+ 
+  console.log(i)
+
+  contractInstance.voting(i,{from: web3.eth.accounts[0]}, function() {
+screenset();
+});
+  
+
+
+}
+
+
+
+function screenset(){
+document.getElementById('voted1').innerHTML = (contractInstance.counting.call("can1").toString());
+document.getElementById('voted2').innerHTML = (contractInstance.counting.call("can2").toString());
+document.getElementById('voted3').innerHTML = (contractInstance.counting.call("can3").toString());
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</script>
+ 
+
+</html> 
