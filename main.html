@@ -1,0 +1,174 @@
+<!DOCTYPE html> 
+<html> 
+<head>
+    <title>2012111382 박창우 - 투표</title> 
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> 
+    <link href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css' rel='stylesheet' type='text/css'> 
+</head> 
+
+<body class="container"> 
+  <h1>Solidity언어를 이용한 블록체인 기반의 스마트 계약 및 증명</h1> 
+  <h2>(투표)</h2> 
+  <ul>컨트랙트 주소: <span id="contractAddr"></span></ul>
+  <ul><span id="insertNum"></span>
+  <input type = "text" id = "code" />
+  <input type='button' id = "code_btn" value = "확인" onclick="isvalid()" class= "btn btn-primary"></ul>
+
+
+   <div class="table-responsive"> 
+     <table class="table table-bordered"> 
+       <thead> 
+         <tr> 
+          <th>No.</th> 
+          <th>Candidate</th>
+	  <th>votes</th> 
+	  <th>Click</th>
+         </tr> 
+       </thead> 
+       <tbody> 
+         <tr> 
+           <td>1.</td> 
+           <td>Park</td>
+           <td id="voted1"></td>  
+	   <td ><input type= 'button' id = "button1" value = "vote" name = 1 onclick="voting(this)" class="btn btn-primary"></td></td>
+         </tr> 
+         <tr> 
+           <td>2.</td> 
+           <td>Lee</td> 
+           <td id="voted2"></td> 
+	   <td><input type= 'button' id = "button2" value = "vote" name = 2 onclick="voting(this)" class="btn btn-primary"></td></td>
+         </tr>
+         <tr> 
+           <td>3.</td> 
+           <td>Kim</td> 
+           <td id="voted3"></td> 
+	   <td><input type= 'button' id = "button3" value = "vote" name = 3 onclick="voting(this)" class="btn btn-primary"></td></td>
+         </tr>
+       </tbody> 
+     </table> 
+   </div> 
+</body> 
+
+ <script type="text/javascript" src="https://cdn.rawgit.com/ethereum/web3.js/develop/dist/web3.js"></script>
+ <script type="text/javascript" src="https://code.jquery.com/jquery-3.1.1.slim.min.js"></script> 
+
+
+<script>
+
+web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+
+var contractAddress = '0x328fca5e8e6c2168932e1b65ddb571733fc1b0a0';
+
+var abi = [{"constant":false,"inputs":[{"name":"candidateName","type":"uint8"}],"name":"voting","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint256"}],"name":"List_voter","outputs":[{"name":"","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"code","type":"uint8"}],"name":"validvoter","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint256"}],"name":"List_candidate","outputs":[{"name":"","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint8"}],"name":"voter_voted","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"code","type":"uint8"}],"name":"resister","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"code","type":"uint8"}],"name":"validresister","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"code","type":"uint8"}],"name":"voter_vote_completed","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"candidateName","type":"uint8"}],"name":"counting","outputs":[{"name":"","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint8"}],"name":"voted","outputs":[{"name":"","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint8"}],"name":"voter_resisted","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"inputs":[{"name":"candidateName","type":"uint8[]"}],"payable":false,"stateMutability":"nonpayable","type":"constructor"}];
+
+
+
+
+
+
+
+midContract = web3.eth.contract(abi);
+
+contractInstance = midContract.at(contractAddress);
+
+document.getElementById('contractAddr').innerHTML = contractAddress;
+
+document.getElementById('insertNum').innerHTML = "유권자 번호 입력 ";
+var B1 = document.getElementById('button1') 
+B1.disabled = true;
+var B2 = document.getElementById('button2') 
+B2.disabled = true;
+var B3 = document.getElementById('button3') 
+B3.disabled = true;
+
+candidates = {1: "voted1", 2: "voted2", 3: "voted3"};
+
+
+
+
+screenset();
+
+
+function voting(candidate){
+
+  	contractInstance.voting(candidate.name,{from: web3.eth.accounts[0]}, function() {
+	screenset();
+	});
+
+	document.getElementById('insertNum').innerHTML = "투표한 유권자";
+  	var B1 = document.getElementById('button1') 
+	B1.disabled = true;
+	var B2 = document.getElementById('button2') 
+	B2.disabled = true;
+	var B3 = document.getElementById('button3') 
+	B3.disabled = true;
+
+}
+
+
+var isvalid_ = false;
+
+
+function screenset(){
+document.getElementById('voted1').innerHTML = (contractInstance.counting.call(1).toString());
+document.getElementById('voted2').innerHTML = (contractInstance.counting.call(2).toString());
+document.getElementById('voted3').innerHTML = (contractInstance.counting.call(3).toString());
+
+	stat = $("#code").val();
+
+	var stat1 = contractInstance.validresister.call(stat);
+
+	var stat2 = contractInstance.validvoter.call(stat);
+
+	if(stat2 == true && stat2 == false)
+	{
+		document.getElementById('insertNum').innerHTML = "투표 가능한 유권자";
+	}
+
+
+}
+
+
+function isvalid(voter){
+
+	stat = $("#code").val();
+
+	console.log(stat)
+
+	var stat1 = contractInstance.validresister.call(stat);
+	console.log(stat1)
+
+	var stat2 = contractInstance.validvoter.call(stat);
+	console.log(stat2)
+
+
+
+	if(stat2 == true)
+	{
+ 		screenset();
+		var form = document.getElementById('code') 
+		form.disabled = true ;
+		var form2 = document.getElementById('code_btn') 
+		form2.disabled = true ;
+
+		var B1 = document.getElementById('button1') 
+		B1.disabled = false ;
+		var B2 = document.getElementById('button2') 
+		B2.disabled = false ;
+		var B3 = document.getElementById('button3') 
+		B3.disabled = false ;
+ 	}
+
+	else if(stat2 == false)
+	{
+		document.getElementById('insertNum').innerHTML = "유효한 유권자 번호를 입력하세요";
+	}
+
+
+}
+
+
+</script>
+ 
+
+</html> 

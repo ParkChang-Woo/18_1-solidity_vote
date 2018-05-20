@@ -1,0 +1,85 @@
+<!DOCTYPE html> 
+<html> 
+<head>
+    <title>2012111382 박창우 - 관리자</title> 
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'> 
+    <link href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css' rel='stylesheet' type='text/css'> 
+</head> 
+
+<body class="container"> 
+  <h1>Solidity언어를 이용한 블록체인 기반의 스마트 계약 및 증명</h1> 
+  <h2>(관리자)</h2> 
+  <ul>컨트랙트 주소: <span id="contractAddr"></span></ul>
+  <input type = "text" id = "voter" />
+  <a href="#" onclick="resister()" class= "btn btn-primary">유권자 등록</a>
+
+ <script type="text/javascript" src="https://cdn.rawgit.com/ethereum/web3.js/develop/dist/web3.js"></script>
+ <script type="text/javascript" src="https://code.jquery.com/jquery-3.1.1.slim.min.js"></script> 
+
+
+<script>
+
+web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+
+var contractAddress = '0x328fca5e8e6c2168932e1b65ddb571733fc1b0a0';
+
+var abi =[{"constant":false,"inputs":[{"name":"candidateName","type":"uint8"}],"name":"voting","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint256"}],"name":"List_voter","outputs":[{"name":"","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"code","type":"uint8"}],"name":"validvoter","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint256"}],"name":"List_candidate","outputs":[{"name":"","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint8"}],"name":"voter_voted","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"code","type":"uint8"}],"name":"resister","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"code","type":"uint8"}],"name":"validresister","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"code","type":"uint8"}],"name":"voter_vote_completed","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"candidateName","type":"uint8"}],"name":"counting","outputs":[{"name":"","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint8"}],"name":"voted","outputs":[{"name":"","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint8"}],"name":"voter_resisted","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"inputs":[{"name":"candidateName","type":"uint8[]"}],"payable":false,"stateMutability":"nonpayable","type":"constructor"}];
+
+
+
+
+
+
+
+
+
+midContract = web3.eth.contract(abi);
+
+contractInstance = midContract.at(contractAddress);
+
+document.getElementById('contractAddr').innerHTML = contractAddress;
+
+
+
+console.log("red")
+
+
+
+function resister(voter){
+
+var voterName = $("#voter").val();
+console.log(voterName)
+
+var stat1 = contractInstance.validresister.call(voterName);
+console.log(stat1)
+
+var stat2 = contractInstance.validvoter.call(voterName);
+console.log(stat2)
+
+
+  contractInstance.resister(voterName,{from: web3.eth.accounts[0]}, function() {
+});
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</script>
+ 
+
+</html> 
